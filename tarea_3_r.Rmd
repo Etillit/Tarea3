@@ -1,0 +1,83 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+Ajustandod el directorio de trabajo
+
+El archivo CSV se ubica intencionalmente en la misma ruta que el cuaderno R
+Por lo anterior no es necesario cambiar el directorio de trabajo.
+Se asigna a una variable 
+```{r}
+dataset_results <- read.csv("primary_results.csv")
+dataset_results
+```
+
+Cargamos la librería deplyr
+```{r}
+library(dplyr)
+```
+
+1. Filtrar todos los datos de florida
+```{r}
+florida_results <- dataset_results %>%
+  filter(state == "Florida")
+
+florida_results
+```
+
+2. Utilice operadores lógicos (& and |), según corresponda:
+```{r}
+#2.1 Filtrar votos para los candidatos Hillary Clinton o Donald Trump
+Clinton_Trump <- dataset_results %>%
+  filter(candidate == "Hillary Clinton" | candidate == "Donald Trump")
+
+Clinton_Trump
+
+#2.2 Filtrar votos para el partido Demócrata y el condado Shelby
+Shelby_Democrats <- dataset_results %>%
+  filter(party == "Democrat" & county == "Shelby")
+
+Shelby_Democrats
+
+# 2.3.Filtrar votos para el estado de Alabama y que la cantidad de votos 
+#     sea mayor a 15000
+Alabama_Most <- dataset_results %>%
+  filter(state == "Alabama" & votes > 1500)
+
+Alabama_Most
+```
+
+3. Utilice la función select y arrange para el siguiente filtrado:
+```{r}
+# 3.1 Filtrar votos para el estado de Texas y el condado Denton, seleccionando
+#     únicamente las columnas party, candidate, votes, luego ordene de forma
+#     descendente por la columna votes.
+
+TexasDenton_Selection <- dataset_results %>%
+  filter(state == "Texas" | state == "Denton") %>%
+  select(party, candidate, votes) %>%
+  arrange(desc(votes))
+
+TexasDenton_Selection
+```
+
+4. Utilice el verbo mutate y arrange para el siguiente filtrado:
+```{r}
+# 4.1 Filtrar por el partido Republicano, que el candidato sea Ted Cruz en el 
+#     estado de Alaska, luego agregue una columna que se llame vote_count que sea
+#     la división de votes por fraction_votes (votes/fraction_votes), finalmente
+#     ordene de forma descendente por vote_count.
+
+vote_count_selection <- dataset_results %>%
+  filter(party == "Republican") %>%
+  filter(candidate == "Ted Cruz") %>%
+  filter(state == "Alaska" ) %>%
+  mutate(vote_count = votes/fraction_votes) %>%
+  arrange(desc(vote_count))
+
+vote_count_selection
+
+```
+
